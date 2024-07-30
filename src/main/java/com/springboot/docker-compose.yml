@@ -1,0 +1,32 @@
+version: '3.8'  # Versão do Docker Compose
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: my-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: banco123
+      POSTGRES_DB: apirest-springboot-v4
+    ports:
+      - "5432:5432"
+    networks:
+      - my-network
+
+  springboot:
+    image: my-spring-boot-app:latest  # Altere para o nome da sua imagem Docker
+    container_name: my-springboot-app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/apirest-springboot-v4
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: banco123
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+
+networks:
+  my-network:
+    driver: bridge
